@@ -33,3 +33,14 @@ module.exports.loginValidation = (data)=>{
     });
     return schema.validate(data);
 }
+// validates the patient login details
+module.exports.patientRegister = (data)=>{
+    const schema = Joi.object({
+        phn_no: Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/)
+        .required(),
+        
+    });
+    return schema.validate(data);
+}
