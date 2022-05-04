@@ -42,7 +42,7 @@ module.exports.login = async (req, res)=>{
         if(!validPassword){return res.status(400).json({message: "Invalid email/Password"});}
 
         // create jwt and send it to the user
-        const accessToken = jwt.sign({_id: doctor._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '7min' });
+        const accessToken = jwt.sign({_id: doctor._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1hr' });
         return res.header('auth-token', accessToken).status(200).json({message: "Login Successful", accessToken: accessToken, name: doctor.name});
 
     }catch(err){

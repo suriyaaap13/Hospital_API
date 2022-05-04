@@ -1,6 +1,7 @@
 const validationController = require('./validation_controller');
 const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
+const path = require('path');
 
 module.exports.register = async (req, res)=>{
 
@@ -20,10 +21,27 @@ module.exports.register = async (req, res)=>{
         if(patient){
             return res.status(200).json({message: "Patient already exists", patient});
         }else{
-            Patient.create(req.body);
-            return res.status(200).json({message: "Patient Created Successfully"});
+            const patientCreated = await Patient.create(req.body);
+            return res.status(200).json({message: "Patient Created Successfully", patientCreated});
         }
     }catch(err){
         return res.status(400).json({message: "Error in creating patient try again"});
     }
+}
+module.exports.createReport = async (req, res)=>{
+    const statusArray = ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit'];
+    if(!statusArray.includes(req.body.status)){
+        return res.status(400).json({message: "Error in creating report status not in array", status_Array: ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit']});
+    }
+    const doctor = await Doctor.findById(req.user._id);
+    const patient = await Patient.findById(req.params.id);
+    const d = new Date();
+    const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'-'+d.getHours()+'-'+d.getMinutes());
+    const update = {
+        doctor: doctor,
+        status: req.body.status,
+        date: date
+    }
+    console.log(update);
+    return res.status(200).json({message: "Report Created Successfully"});
 }

@@ -12,7 +12,8 @@ const patientSchema = new mongoose.Schema({
             ref: 'Doctor'
         },
         status: {
-            type: String
+            type: String,
+            required: true
         },
         date: {
             type: String

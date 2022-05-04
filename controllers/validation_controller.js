@@ -41,6 +41,7 @@ module.exports.patientRegister = (data)=>{
         .pattern(/^[0-9]+$/)
         .required(),
         
+        
     });
     return schema.validate(data);
 }
