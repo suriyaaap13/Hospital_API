@@ -3,6 +3,7 @@ const Doctor = require('../models/doctor');
 const Patient = require('../models/patient');
 const path = require('path');
 
+// register a new patient/display the patient info if exists
 module.exports.register = async (req, res)=>{
 
     const {error} = validationController.patientRegister(req.body);
@@ -28,6 +29,8 @@ module.exports.register = async (req, res)=>{
         return res.status(400).json({message: "Error in creating patient try again"});
     }
 }
+
+// create patients report and stores it in the database
 module.exports.createReport = async (req, res)=>{
     const statusArray = ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit'];
     if(!statusArray.includes(req.body.status)){
@@ -42,6 +45,7 @@ module.exports.createReport = async (req, res)=>{
         status: req.body.status,
         date: date
     }
-    console.log(update);
+    const report = await patient.reports.push(update);
+    patient.save();
     return res.status(200).json({message: "Report Created Successfully"});
 }
