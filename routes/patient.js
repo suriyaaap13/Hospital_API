@@ -4,7 +4,8 @@ const verify = require('../config/verifyToken');
 
 const patientController = require('../controllers/patient_controller');
 
-router.get('/register', verify, patientController.register);
-router.get('/:id/create_report', verify, patientController.createReport);
+router.post('/register', verify, patientController.register);
+router.post('/:id/create_report', verify, patientController.createReport);
+router.get('/:id/all_reports', verify, patientController.displayAllReports);
 
 module.exports = router;

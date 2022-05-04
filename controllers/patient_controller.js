@@ -49,3 +49,15 @@ module.exports.createReport = async (req, res)=>{
     patient.save();
     return res.status(200).json({message: "Report Created Successfully"});
 }
+// displays all the reports of the respective person
+module.exports.displayAllReports = async (req, res)=>{
+    const patient = await Patient.findById(req.params.id)
+    .populate({
+        path: 'reports',
+        populate: {
+            path: 'doctor',
+            model: 'Doctor'
+        }
+    });
+    return res.status(200).json({reports: patient.reports});
+}
