@@ -32,6 +32,7 @@ module.exports.register = async (req, res)=>{
 
 // create patients report and stores it in the database
 module.exports.createReport = async (req, res)=>{
+    // if the status entered by the doctor doesn't match with the array elements then return error
     const statusArray = ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit'];
     if(!statusArray.includes(req.body.status)){
         return res.status(400).json({message: "Error in creating report status not in array", status_Array: ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit']});
@@ -40,7 +41,7 @@ module.exports.createReport = async (req, res)=>{
         const doctor = await Doctor.findById(req.user._id);
         const patient = await Patient.findById(req.params.id);
         const d = new Date();
-        const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'-'+d.getHours()+'-'+d.getMinutes());
+        const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'_time_'+d.getHours()+'-'+d.getMinutes());
         const update = {
             doctor: doctor,
             status: req.body.status,
