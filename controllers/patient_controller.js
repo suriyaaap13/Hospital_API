@@ -36,28 +36,41 @@ module.exports.createReport = async (req, res)=>{
     if(!statusArray.includes(req.body.status)){
         return res.status(400).json({message: "Error in creating report status not in array", status_Array: ['Negative', 'Travelled-Quarantine', 'Symptoms-Quarantine', 'Positive-Admit']});
     }
-    const doctor = await Doctor.findById(req.user._id);
-    const patient = await Patient.findById(req.params.id);
-    const d = new Date();
-    const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'-'+d.getHours()+'-'+d.getMinutes());
-    const update = {
-        doctor: doctor,
-        status: req.body.status,
-        date: date
+    try{
+        const doctor = await Doctor.findById(req.user._id);
+        const patient = await Patient.findById(req.params.id);
+        const d = new Date();
+        const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'-'+d.getHours()+'-'+d.getMinutes());
+        const update = {
+            doctor: doctor,
+            status: req.body.status,
+            date: date
+        }
+        const report = await patient.reports.push(update);
+        patient.save();
+        return res.status(200).json({message: "Report Created Successfully"});
+    }catch(err){
+        return res.status(400).json({message: "Error in creating report try again"});
     }
-    const report = await patient.reports.push(update);
-    patient.save();
-    return res.status(200).json({message: "Report Created Successfully"});
+    
 }
 // displays all the reports of the respective person
 module.exports.displayAllReports = async (req, res)=>{
-    const patient = await Patient.findById(req.params.id)
-    .populate({
-        path: 'reports',
-        populate: {
-            path: 'doctor',
-            model: 'Doctor'
+    try{
+        const patient = await Patient.findById(req.params.id)
+        .populate({
+            path: 'reports',
+            populate: {
+                path: 'doctor',
+                model: 'Doctor'
+            }
+        });
+        if(patient.reports.length==0){
+            return res.status(200).json({reports: patient.reports});
         }
-    });
-    return res.status(200).json({reports: patient.reports});
+        return res.status(200).json({reports: patient.reports});
+    }catch(err){
+        return res.status(400).json({message: "Bad request Check your patient Id"});
+    }
+    
 }
