@@ -41,7 +41,11 @@ module.exports.createReport = async (req, res)=>{
         const doctor = await Doctor.findById(req.user._id);
         const patient = await Patient.findById(req.params.id);
         const d = new Date();
-        const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'_time_'+d.getHours()+'-'+d.getMinutes());
+        let minutes = d.getMinutes();
+        if(minutes<10){
+            minutes = '0'+minutes;
+        }
+        const date = path.join(d.getFullYear()+'-'+d.getMonth()+'-'+d.getDay()+'_time_'+d.getHours()+':'+minutes);
         const update = {
             doctor: doctor,
             status: req.body.status,
@@ -51,6 +55,7 @@ module.exports.createReport = async (req, res)=>{
         patient.save();
         return res.status(200).json({message: "Report Created Successfully"});
     }catch(err){
+        console.log(err);
         return res.status(400).json({message: "Error in creating report try again"});
     }
     

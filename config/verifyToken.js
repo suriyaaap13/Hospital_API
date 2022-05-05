@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 
+// authenticates doctor based on access token and stores the doctor in the req
 function authenticateToken(req, res, next){
     const token = req.header('auth-token');
     if(!token){return res.status(401).json({
